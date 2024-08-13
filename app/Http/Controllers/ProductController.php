@@ -14,15 +14,13 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            'quantity' => 'required|integer',
-            'total_price' => 'required|numeric',
-        ]);
+        $products = $request->input('products');
 
-        $product = Product::create($validatedData);
-        return response()->json($product, 201);
+        foreach ($products as $productData) {
+            Product::create($productData);
+        }
+
+        return response()->json(['message' => 'Products saved successfully.']);
     }
 
     public function show($id)

@@ -20,6 +20,11 @@ use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\ScheduleRequestController;
 use App\Http\Controllers\CourseMaterialController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\BuyingPriceController;
+use App\Http\Controllers\CustomTaxController;
+
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -31,7 +36,10 @@ use App\Http\Controllers\ProductController;
 |
 */
 
-
+Route::post('/register', [RegisterController::class, 'register']);
+Route::post('/sign-in', [AuthController::class, 'signIn']);
+Route::post('/products/buying-price', [BuyingPriceController::class, 'store']);
+Route::post('/custom-taxes', [CustomTaxController::class, 'store']);
 // Route::prefix('auth')->group(
 //     function () {
 //         //api/auth/ ..
@@ -56,4 +64,4 @@ use App\Http\Controllers\ProductController;
 //     }
 // );
 
-Route::post('/products',[ ProductController::class, 'store']);
+Route::post('/products', [ProductController::class, 'store']);
