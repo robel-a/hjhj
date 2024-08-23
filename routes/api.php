@@ -23,6 +23,12 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BuyingPriceController;
 use App\Http\Controllers\CustomTaxController;
+use App\Http\Controllers\SellingPriceController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\InvoiceController;
+
+
+
 
 
 /*
@@ -36,10 +42,22 @@ use App\Http\Controllers\CustomTaxController;
 |
 */
 
+
+
+Route::get('/selling-price/{productId}', [SellingPriceController::class, 'index']);
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/sign-in', [AuthController::class, 'signIn']);
 Route::post('/products/buying-price', [BuyingPriceController::class, 'store']);
+Route::get('/buying-price/total/{productId}', [BuyingPriceController::class, 'getTotalProductPrice']);
+Route::get('/show-products/{productId}', [ProductController::class, 'getProductById']);
 Route::post('/custom-taxes', [CustomTaxController::class, 'store']);
+Route::get('/reports', [ReportController::class, 'getReports']);
+Route::post('/invoices', [InvoiceController::class, 'store']);
+Route::get('/invoiceReference', [InvoiceController::class, 'getInvoiceReferences']);
+
+// Route to fetch invoice data based on reference number
+Route::get('/invoice/{reference}', [InvoiceController::class, 'getInvoiceData']);
+// Route::post('/reports', [ReportController::class, 'storeReport']);
 // Route::prefix('auth')->group(
 //     function () {
 //         //api/auth/ ..

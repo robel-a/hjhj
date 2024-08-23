@@ -49,4 +49,30 @@ class ProductController extends Controller
         $product->delete();
         return response()->json(null, 204);
     }
+
+public function getProductById($productId)
+{
+    try {
+        // Fetch the product by its ID
+        $product = Product::findOrFail($productId);
+
+        // Return the product details as a JSON response
+        return response()->json([
+            'product' => $product,
+        ], 200);
+
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        // Handle the case where the product is not found
+        return response()->json([
+            'error' => 'Product not found',
+        ], 404);
+    } catch (\Exception $e) {
+        // Handle any other errors
+        return response()->json([
+            'error' => 'An error occurred while retrieving the product',
+        ], 500);
+    }
 }
+
+}
+

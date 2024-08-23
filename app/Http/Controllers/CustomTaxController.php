@@ -9,32 +9,33 @@ class CustomTaxController extends Controller
 {
     public function store(Request $request)
     {
+        // Validate the incoming data
         $validatedData = $request->validate([
-    'totalProductPrice' => 'required|numeric',
-    'freightValue' => 'required|numeric',
-    'insuranceValue' => 'required|numeric',
-    'exchangeRate' => 'required|numeric',
-    'dutyValue' => 'required|numeric',
-    'surValue' => 'required|numeric',
-    'vatValue' => 'required|numeric',
-    'exciseValue' => 'required|numeric',
-    'withholdingValue' => 'required|numeric',
-    'socialValue' => 'required|numeric',
-    'totalFreight' => 'required|numeric',
-    'totalInsurance' => 'required|numeric',
-    'totalDuties' => 'required|numeric',
-    'totalExcise' => 'required|numeric',
-    'totalVAT' => 'required|numeric',
-    'totalSUR' => 'required|numeric',
-    'totalWithholding' => 'required|numeric',
-    'totalSocial' => 'required|numeric',
-    'totalTax' => 'required|numeric',
-    'cif' => 'required|numeric',
-    'products' => 'required|array',
-    'productDetails' => 'required|array',
-]);
+            'totalProductPrice' => 'required|numeric',
+            'freightValue' => 'required|numeric',
+            'insuranceValue' => 'required|numeric',
+            'exchangeRate' => 'required|numeric',
+            'dutyValue' => 'required|numeric',
+            'surValue' => 'required|numeric',
+            'vatValue' => 'required|numeric',
+            'exciseValue' => 'required|numeric',
+            'withholdingValue' => 'required|numeric',
+            'socialValue' => 'required|numeric',
+            'totalFreight' => 'required|numeric',
+            'totalInsurance' => 'required|numeric',
+            'totalDuties' => 'required|numeric',
+            'totalExcise' => 'required|numeric',
+            'totalVAT' => 'required|numeric',
+            'totalSUR' => 'required|numeric',
+            'totalWithholding' => 'required|numeric',
+            'totalSocial' => 'required|numeric',
+            'totalTax' => 'required|numeric',
+            'cif' => 'required|numeric',
+            'products' => 'required|array',
+            'productDetails' => 'required|array',
+        ]);
 
-
+        // Create a new CustomTax entry
         $customTax = CustomTax::create([
             'total_product_price' => $validatedData['totalProductPrice'],
             'freight_value' => $validatedData['freightValue'],
@@ -56,8 +57,8 @@ class CustomTaxController extends Controller
             'total_social' => $validatedData['totalSocial'],
             'total_tax' => $validatedData['totalTax'],
             'cif' => $validatedData['cif'],
-            'products' => $validatedData['products'],
-            'product_details' => $validatedData['productDetails'],
+            'products' => json_encode($validatedData['products']), // Ensure proper storage
+            'product_details' => json_encode($validatedData['productDetails']),
         ]);
 
         return response()->json($customTax, 201);
