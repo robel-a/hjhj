@@ -43,7 +43,8 @@ use App\Http\Controllers\InvoiceController;
 */
 
 
-
+Route::post('/products', [ProductController::class, 'store']);
+Route::put('/products/{editProductId}', [ProductController::class, 'update']);
 Route::get('/selling-price/{productId}', [SellingPriceController::class, 'index']);
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/sign-in', [AuthController::class, 'signIn']);
@@ -52,6 +53,7 @@ Route::get('/buying-price/total/{productId}', [BuyingPriceController::class, 'ge
 Route::get('/show-products/{productId}', [ProductController::class, 'getProductById']);
 Route::post('/custom-taxes', [CustomTaxController::class, 'store']);
 Route::get('/reports', [ReportController::class, 'getReports']);
+Route::delete('/reports/{id}', [ReportController::class, 'destroy']);
 Route::post('/invoices', [InvoiceController::class, 'store']);
 Route::get('/invoiceReference', [InvoiceController::class, 'getInvoiceReferences']);
 
@@ -82,4 +84,3 @@ Route::get('/invoice/{reference}', [InvoiceController::class, 'getInvoiceData'])
 //     }
 // );
 
-Route::post('/products', [ProductController::class, 'store']);

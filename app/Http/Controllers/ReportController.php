@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\CustomTax;
 use App\Models\BuyingPrice;
+use App\Models\Product;
 use Illuminate\Support\Facades\Log;
 
 class ReportController extends Controller
@@ -77,7 +79,8 @@ class ReportController extends Controller
             'freight_value' => $report->freight_value,
             'insurance_value' => $report->insurance_value,
             'exchange_rate' => $report->exchange_rate,
-            'cif' => $report->cif,
+            'converted_price' => $report->converted_price,
+            'amount_in_birr' => $report->amount_in_birr,
             'total_tax' => $report->total_tax,
             'products' => $report->products, // No need to decode if already an array
             'product_details' => $this->extractProductDetails($report->product_details),
@@ -138,4 +141,44 @@ class ReportController extends Controller
 
         return response()->json($report, 201);
     }
+
+    public function destroy(Request $request, $id)
+{
+    $type = $request->query('type');
+
+    try {
+        // Start a database transaction to ensure all deletions are successful or rollback
+        DB::beginTransaction();
+
+        // Delete the report from the corresponding table
+        if ($type === 'customTax') {
+            $report = CustomTax::findOrFail($id);
+            $report->delete();
+        } elseif ($type === 'buying') {
+            $report = BuyingPrice::findOrFail($id);
+            $report->delete();
+        } else {
+            return response()->json(['error' => 'Invalid report type'], 400);
+        }
+
+        // Delete the associated product from the `products` table
+        $product = Product::find($id); // Assuming `id` is the same for products table
+        if ($product) {
+            $product->delete();
+        }
+
+        // Commit the transaction
+        DB::commit();
+
+        return response()->json(['message' => 'Report and associated product deleted successfully'], 200);
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        DB::rollBack(); // Rollback transaction if a model is not found
+        return response()->json(['error' => 'Report not found'], 404);
+    } catch (\Exception $e) {
+        DB::rollBack(); // Rollback transaction if any exception occurs
+        Log::error('Error deleting report and product: ' . $e->getMessage());
+        return response()->json(['error' => 'Failed to delete report and product. Please try again.'], 500);
+    }
+}
+
 }

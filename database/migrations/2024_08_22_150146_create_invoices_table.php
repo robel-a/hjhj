@@ -10,7 +10,7 @@ class CreateInvoicesTable extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->string('reference_number')->unique();
+            $table->string('reference_number');
             $table->json('product_details'); // Store product details as JSON
             $table->decimal('total_tax', 10, 2);
             $table->decimal('converted_price', 10, 2);

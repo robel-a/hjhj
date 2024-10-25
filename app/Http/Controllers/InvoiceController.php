@@ -11,7 +11,7 @@ class InvoiceController extends Controller
     {
         // Validate incoming request
         $validated = $request->validate([
-            'referenceNumber' => 'required|string|unique:invoices,reference_number',
+            'referenceNumber' => 'required|string',
             'productDetails' => 'required|array',
             'totalTax' => 'required|numeric',
             'convertedPrice' => 'required|numeric',
@@ -48,14 +48,15 @@ class InvoiceController extends Controller
         }
     }
 
-    public function getInvoiceReferences()
-    {
-        // Retrieve only the invoice references from the database
-        $references = Invoice::pluck('reference_number');
-        
-        // Return the references as a JSON response
-        return response()->json($references);
-    }
+public function getInvoiceReferences()
+{
+    // Retrieve only distinct invoice references from the database
+    $references = Invoice::distinct()->pluck('reference_number');
+    
+    // Return the references as a JSON response
+    return response()->json($references);
+}
+
 
     /**
      * Fetch invoice details based on the reference number.
@@ -64,18 +65,26 @@ class InvoiceController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function getInvoiceData($reference)
-    {
-        // Find the invoice by reference number
-        $invoice = Invoice::where('reference_number', $reference)->first();
+{
+    try {
+        Log::info("Fetching invoices for reference: $reference");
 
-        if (!$invoice) {
-            // Return a 404 response if the invoice is not found
-            return response()->json(['error' => 'Invoice not found'], 404);
+        // Fetch all invoices with the given reference number
+        $invoices = Invoice::where('reference_number', $reference)->get();
+
+        if ($invoices->isEmpty()) {
+            Log::warning("No invoices found for reference: $reference");
+            return response()->json(['error' => 'No invoices found for this reference number'], 404);
         }
 
-        // Return the invoice details as a JSON response
-        return response()->json($invoice);
+        Log::info("Invoices found: " . $invoices->count());
+        return response()->json($invoices);
+    } catch (\Exception $e) {
+        Log::error("Error fetching invoices: " . $e->getMessage());
+        return response()->json(['error' => 'Failed to fetch invoices'], 500);
     }
+}
+
 
 }
 

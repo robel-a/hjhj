@@ -29,19 +29,21 @@ class ProductController extends Controller
         return response()->json($product);
     }
 
-    public function update(Request $request, $id)
-    {
-        $validatedData = $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'price' => 'sometimes|numeric',
-            'quantity' => 'sometimes|integer',
-            'total_price' => 'sometimes|numeric',
-        ]);
 
-        $product = Product::findOrFail($id);
-        $product->update($validatedData);
-        return response()->json($product);
-    }
+public function update(Request $request, $id)
+{
+    $validatedData = $request->validate([
+        'name' => 'sometimes|string|max:255',
+        'price' => 'sometimes|numeric',
+        'quantity' => 'sometimes|integer',
+        'total_price' => 'sometimes|numeric',
+    ]);
+
+    $product = Product::findOrFail($id);
+    $product->update($validatedData);
+    return response()->json($product);
+}
+
 
     public function destroy($id)
     {
